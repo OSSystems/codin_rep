@@ -28,5 +28,8 @@ group :development, :test do
 end
 
 group :test do
+  gem 'ci_reporter_minitest'
   gem 'minitest'
+  gem 'simplecov', :require => false
+  gem 'simplecov-rcov', :require => false
 end

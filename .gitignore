@@ -1,2 +1,4 @@
 .bundle
 pkg/
+test/coverage
+test/reports

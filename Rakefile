@@ -18,6 +18,28 @@
 # Rua Clóvis Gularte Candiota 132, Pelotas-RS, Brasil.
 # e-mail: contato@ossystems.com.br
 
+loaded_simplecov = false
+begin
+  require 'simplecov'
+  require 'simplecov-rcov'
+  loaded_simplecov = true
+rescue LoadError
+  # simplecov wasn't loaded... We're probably in a production environment.
+end
+
+if loaded_simplecov
+  SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter.new(
+    [
+      SimpleCov::Formatter::HTMLFormatter,
+      SimpleCov::Formatter::RcovFormatter
+    ]
+  )
+
+  SimpleCov.start 'rails' do
+    coverage_dir(File.expand_path(__dir__ + '/test/coverage'))
+  end
+end
+
 require 'rake'
 require 'rake/testtask'
 require 'bundler'
@@ -29,4 +51,21 @@ task :default => :test
 Rake::TestTask.new(:test) do |t|
   t.libs << 'test'
   t.pattern = 'test/unit/**/*_test.rb'
+end
+
+if loaded_simplecov
+  task :disable_coverage do
+    SimpleCov.running = false
+  end
+
+  unless ENV['CI_TESTS'].nil? or ENV['CI_TESTS'] == ''
+    require 'ci/reporter/rake/minitest'
+    task :test => 'ci:setup:minitest'
+  else
+    Rake::Task.tasks.each do |t|
+      t.enhance do
+        Rake::Task["disable_coverage"].invoke
+      end
+    end
+  end
 end
