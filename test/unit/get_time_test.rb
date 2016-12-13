@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# codinrep - Gem para acesso de REPs da Telebyte
+# codin_rep - Gem para acesso de REPs da Telebyte
 # Copyright (C) 2016  O.S. Systems Softwares Ltda.
 
 # This program is free software: you can redistribute it and/or modify
@@ -18,22 +18,23 @@
 # Rua Clóvis Gularte Candiota 132, Pelotas-RS, Brasil.
 # e-mail: contato@ossystems.com.br
 
-require "codin_rep/get_time"
+require File.dirname(__FILE__) + '/../test_helper'
 
-module CodinRep
-  class << self
-    def included(base)
-      return if base.included_modules.include?(InstanceMethods)
-      # base.extend(ClassMethods)
-      base.send(:include, InstanceMethods)
-    end
+class GetTimeTest < Minitest::Test
+  def setup
+    @mock_time_clock = MockTimeClock.new
+    @mock_time_clock.start
   end
 
-  module InstanceMethods
-    def get_time
-      command = CodinRep::GetTime.new(self.ip, self.tcp_port)
-      response = command.execute
-      return response
-    end
+  def teardown
+    @mock_time_clock.stop
+  end
+
+  def test_get_time
+    # The REP doesn't have a millisecond resolution, so round it to the closest
+    # second.
+    time = Time.now.round
+    @mock_time_clock.data.time = time
+    assert_equal time, @mock_time_clock.get_time
   end
 end

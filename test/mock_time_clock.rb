@@ -55,16 +55,6 @@ class MockTimeClock
         # Read command type
         raw_command = read_from_socket_with_timeout(socket, 9)
 
-        # while line = read_from_socket_with_timeout(socket, bytes_to_be_read)
-        #   if line.blank?
-        #     response = process_command(raw_command)
-        #     break if response.nil?
-        #     socket.write response
-        #   else
-        #     raw_command << line
-        #   end
-        # end
-
         response = process_command(raw_command)
 
         socket.write response
