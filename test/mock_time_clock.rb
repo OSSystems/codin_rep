@@ -56,7 +56,7 @@ class MockTimeClock
         # Read command type
         raw_command = read_from_socket_with_timeout(socket, 9)
 
-        response = process_command(raw_command)
+        response = process_command(raw_command, socket)
 
         socket.write response
       ensure
@@ -98,8 +98,14 @@ class MockTimeClock
   end
 
   private
-  def process_command(raw_command)
+  def process_command(raw_command, socket)
     case raw_command
+    when "PGREP009b" # Get time
+      response = 'REP008b' + get_timeclock_time
+    when "PGREP016A" # Set time
+      payload = read_from_socket_with_timeout(socket, 7)
+      response = 'REP008A' + payload
+      set_timeclock_time(payload)
     else
       raise StandardError.new("Unknown command \"#{raw_command}\"!")
     end
@@ -115,5 +121,11 @@ class MockTimeClock
   def get_timeclock_time(current_time=nil)
     current_time ||= @data.time
     CodinRep::TimeUtil.pack current_time
+  end
+
+  def set_timeclock_time(payload)
+    time = CodinRep::TimeUtil.unpack payload
+    @data.time = time
+    return time
   end
 end
