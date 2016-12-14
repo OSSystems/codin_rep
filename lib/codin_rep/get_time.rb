@@ -19,6 +19,7 @@
 # e-mail: contato@ossystems.com.br
 
 require "codin_rep/command"
+require 'codin_rep/time_util'
 
 module CodinRep
   class GetTime < Command
@@ -40,15 +41,13 @@ module CodinRep
     end
 
     def get_response_payload
-      @hours, @minutes, @seconds, @day, @month, @year, @weekday = @response[7..-1].unpack('H2H2H2H2H2H2C').collect{|c| c.to_i}
-      # Year is in 2-digit format, so add 2000 to it:
-      @year += 2000
+      @response_payload = @response[7..-1]
     end
 
     def get_data_from_response_payload
       @time = nil
       begin
-        @time = Time.new(@year, @month, @day, @hours, @minutes, @seconds)
+        @time = CodinRep::TimeUtil.unpack @response_payload
       rescue ArgumentError
         raise MalformedResponsePayload.new 'get time'
       end

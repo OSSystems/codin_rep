@@ -19,6 +19,7 @@
 # e-mail: contato@ossystems.com.br
 
 require 'codin_rep'
+require 'codin_rep/time_util'
 require 'socket'
 
 class MockTimeClock
@@ -99,8 +100,6 @@ class MockTimeClock
   private
   def process_command(raw_command)
     case raw_command
-    when "PGREP009b"
-      response = get_timeclock_time
     else
       raise StandardError.new("Unknown command \"#{raw_command}\"!")
     end
@@ -113,14 +112,8 @@ class MockTimeClock
     return data_to_receive
   end
 
-  def get_timeclock_time
-    # The current weekday is expected by the REP in the following format: 1 for
-    # Sunday, 2 for Monday and so on. However there's no direct transformation
-    # using Time#strftime for the weekday.
-    # So we use String#next, which adds + 1 to the last character on it, which
-    # is exactly what the format requires.
-    formated_time = @data.time.strftime('%H %M %S %d %m %y 0%w').next
-    codified_time = formated_time.split.collect{|c| c.to_i(16)}.pack('C*')
-    'REP008b' + codified_time
+  def get_timeclock_time(current_time=nil)
+    current_time ||= @data.time
+    CodinRep::TimeUtil.pack current_time
   end
 end
