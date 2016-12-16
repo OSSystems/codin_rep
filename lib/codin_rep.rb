@@ -20,6 +20,7 @@
 
 require "codin_rep/get_time"
 require "codin_rep/set_time"
+require "codin_rep/get_identification"
 
 module CodinRep
   class << self
@@ -40,6 +41,19 @@ module CodinRep
       command = CodinRep::SetTime.new(time, self.ip, self.tcp_port)
       response = command.execute
       return response
+    end
+
+    def get_employer
+      command = CodinRep::GetIdentification.new(self.ip, self.tcp_port)
+      response = command.execute
+
+      hash = {}
+      hash[:document_type] = response.employer_type
+      hash[:document_number] = response.employer_document
+      hash[:cei_document] = response.employer_cei
+      hash[:company_name] = response.employer_name
+
+      return hash
     end
   end
 end

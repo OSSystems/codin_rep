@@ -106,6 +106,8 @@ class MockTimeClock
       payload = read_from_socket_with_timeout(socket, 7)
       response = 'REP008A' + payload
       set_timeclock_time(payload)
+    when "PGREP009Z"
+      response = 'REP2359' + @data.afd.header.export + "\r\n"
     else
       raise StandardError.new("Unknown command \"#{raw_command}\"!")
     end
