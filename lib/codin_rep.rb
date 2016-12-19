@@ -25,7 +25,6 @@ module CodinRep
   class << self
     def included(base)
       return if base.included_modules.include?(InstanceMethods)
-      # base.extend(ClassMethods)
       base.send(:include, InstanceMethods)
     end
   end
