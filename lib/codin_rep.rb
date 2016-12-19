@@ -55,5 +55,11 @@ module CodinRep
 
       return hash
     end
+
+    def get_serial_number
+      command = CodinRep::GetIdentification.new(self.ip, self.tcp_port)
+      response = command.execute
+      response.rep_serial_number
+    end
   end
 end
