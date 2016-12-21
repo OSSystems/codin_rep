@@ -23,6 +23,8 @@ require 'timeout'
 
 module CodinRep
   class Communication
+    READ_SIZE = 4096
+
     include Timeout
 
     def initialize(host_address, port, timeout_time=60, max_attempts=3)
@@ -86,7 +88,7 @@ module CodinRep
 
       while data_to_receive.size < expected_size
         bytes_to_be_read = expected_size - data_to_receive.size
-        bytes_to_be_read = 100 if bytes_to_be_read > 100
+        bytes_to_be_read = READ_SIZE if bytes_to_be_read > READ_SIZE
 
         timeout(@timeout_time) {
           data_to_receive += @socket.readpartial( bytes_to_be_read )
