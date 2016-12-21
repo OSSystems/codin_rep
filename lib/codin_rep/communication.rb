@@ -27,6 +27,10 @@ module CodinRep
 
     include Timeout
 
+    def self.finalize(socket)
+      proc { socket.close }
+    end
+
     def initialize(host_address, port, timeout_time=60, max_attempts=3)
       @host_address = host_address
       @port = port
@@ -35,43 +39,53 @@ module CodinRep
       @socket = nil
     end
 
-    def communicate(payload, expected_response_size)
-      @payload = payload
-      @expected_response_size = expected_response_size
+    def open_socket
+      if @socket
+        @socket.close
+        @socket = nil
+      end
 
-      attempt = 0
-
-      while attempt < @max_attempts do
+      @attempt = 0
+      while @attempt < @max_attempts do
         begin
           timeout(@timeout_time) {
-            @socket = open_socket(@host_address, @port)
+            @socket = TCPSocket.open(@host_address, @port)
           }
+          # Use a finalizer to close the socket if "self" is going to be
+          # destroyed.
+          ObjectSpace.define_finalizer( self, self.class.finalize(@socket) )
         rescue Timeout::Error
           @socket = nil
         end
+        break if @socket
 
-        @received_data = nil
-
-        if @socket
-          begin
-            @received_data = send_receive_data(@payload)
-          ensure
-            @socket.close
-          end
-        end
-
-        break unless @received_data.nil?
-        attempt += 1
+        @attempt += 1
       end
 
-      raise "Timeout error" if attempt >= @max_attempts
+      raise "Timeout error" if @attempt >= @max_attempts
+      @socket
+    end
+
+    def communicate(payload, expected_response_size)
+      open_socket if @socket.nil?
+
+      @payload = payload
+      @expected_response_size = expected_response_size
+
+      while @attempt < @max_attempts do
+        @received_data = nil
+
+        @received_data = send_receive_data(@payload)
+
+        break unless @received_data.nil?
+        @attempt += 1
+      end
+
+      raise "Timeout error" if @attempt >= @max_attempts
       @received_data
     end
 
     private
-    def open_socket(host_address, port)
-      return TCPSocket.open(host_address, port)
-    end
 
     def send_receive_data(data_to_send)
       @socket.write(data_to_send)
