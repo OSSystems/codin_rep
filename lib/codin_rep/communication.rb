@@ -85,6 +85,13 @@ module CodinRep
       @received_data
     end
 
+    def close
+      if @socket
+        @socket.close
+        @socket = nil
+      end
+    end
+
     private
 
     def send_receive_data(data_to_send)

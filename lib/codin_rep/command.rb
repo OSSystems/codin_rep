@@ -60,6 +60,11 @@ module CodinRep
       check_response_header
       @payload = get_response_payload
       return get_data_from_response_payload
+    rescue
+      @communication.close
+      raise
+    ensure
+      @communication.close if should_close_connection?
     end
 
     def get_timeout_time
@@ -89,6 +94,10 @@ module CodinRep
 
     def get_expected_response_size
       raise_not_implemented_error
+    end
+
+    def should_close_connection?
+      !!@response
     end
 
     private

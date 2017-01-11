@@ -37,6 +37,7 @@ class MockTimeClock
     @threadsMutex = Mutex.new
     @served_connections = 0
     @time = true
+    @is_sending_records = false
   end
 
   def tcp_port
@@ -52,13 +53,12 @@ class MockTimeClock
       }
       begin
         raw_command = []
-
+        @keep_connected = true
         # Read command type
-        raw_command = read_from_socket_with_timeout(socket, 9)
-
-        response = process_command(raw_command, socket)
-
-        socket.write response
+        while @keep_connected && raw_command = read_from_socket_with_timeout(socket, 9)
+          response = process_command(raw_command, socket)
+          socket.write response
+        end
       ensure
         socket.close unless socket.closed?
         @threadsMutex.synchronize {
@@ -108,6 +108,31 @@ class MockTimeClock
       set_timeclock_time(payload)
     when "PGREP009Z"
       response = 'REP2359' + @data.afd.header.export + "\r\n"
+      @keep_connected = false
+    when "PGREP0289"
+      @afd_read_start_id = read_from_socket_with_timeout(socket, 9).to_i
+      @afd_read_end_id = read_from_socket_with_timeout(socket, 9).to_i
+      @afd_read_current_id = nil
+      @afd_read_finished = false
+      response = "REP0029["
+    when "PGREP009,"
+      if @afd_read_finished
+        response = "REP0029]"
+        @keep_connected = false
+      else
+        if @afd_read_current_id.nil?
+          @afd_read_current_id = @afd_read_start_id
+          response = 'REP3029'
+        elsif @afd_read_current_id == @afd_read_end_id or @afd_read_current_id >= @data.afd.records.size
+          response = 'REP0909'
+          @afd_read_finished = true
+        else
+          response = 'REP0379'
+        end
+        afd_records = ([@data.afd.header] + @data.afd.records)
+        response += afd_records[@afd_read_current_id].export + "\r\n"
+      end
+      @afd_read_current_id += 1
     else
       raise StandardError.new("Unknown command \"#{raw_command}\"!")
     end

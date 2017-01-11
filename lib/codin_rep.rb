@@ -21,6 +21,7 @@
 require "codin_rep/get_time"
 require "codin_rep/set_time"
 require "codin_rep/get_identification"
+require "codin_rep/get_records"
 
 module CodinRep
   class << self
@@ -60,6 +61,12 @@ module CodinRep
       command = CodinRep::GetIdentification.new(self.ip, self.tcp_port)
       response = command.execute
       response.rep_serial_number
+    end
+
+    def get_records(first_id=nil)
+      command = CodinRep::GetRecords.new(first_id, self.ip, self.tcp_port)
+      response = command.execute
+      response
     end
   end
 end
