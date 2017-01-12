@@ -18,6 +18,7 @@
 # Rua Clóvis Gularte Candiota 132, Pelotas-RS, Brasil.
 # e-mail: contato@ossystems.com.br
 
+require "afd_parser"
 require "codin_rep/command"
 
 module CodinRep

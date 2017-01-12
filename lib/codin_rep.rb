@@ -20,7 +20,6 @@
 
 require "codin_rep/get_time"
 require "codin_rep/set_time"
-require "codin_rep/get_identification"
 require "codin_rep/get_records"
 
 module CodinRep
@@ -45,7 +44,7 @@ module CodinRep
     end
 
     def get_employer
-      command = CodinRep::GetIdentification.new(self.ip, self.tcp_port)
+      command = CodinRep::GetAfdHeader.new(self.ip, self.tcp_port)
       response = command.execute
 
       hash = {}
@@ -58,7 +57,7 @@ module CodinRep
     end
 
     def get_serial_number
-      command = CodinRep::GetIdentification.new(self.ip, self.tcp_port)
+      command = CodinRep::GetAfdHeader.new(self.ip, self.tcp_port)
       response = command.execute
       response.rep_serial_number
     end
