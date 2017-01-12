@@ -50,7 +50,6 @@ module CodinRep
       '5' => 88
     }.freeze
 
-
     def initialize(first_id, *args)
       super(*args)
       @first_id = first_id.to_i
