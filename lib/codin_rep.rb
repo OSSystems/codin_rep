@@ -18,9 +18,12 @@
 # Rua Clóvis Gularte Candiota 132, Pelotas-RS, Brasil.
 # e-mail: contato@ossystems.com.br
 
+require "codin_rep/add_employee"
+require "codin_rep/employee_command"
 require "codin_rep/get_time"
 require "codin_rep/set_time"
 require "codin_rep/get_records"
+require "codin_rep/del_employee"
 
 module CodinRep
   class << self
@@ -64,6 +67,18 @@ module CodinRep
 
     def get_records(first_id=nil)
       command = CodinRep::GetRecords.new(first_id, self.ip, self.tcp_port)
+      response = command.execute
+      response
+    end
+
+    def set_employee(operation_type, registration, pis_number, name)
+      if [:add, :edit].include? operation_type
+        command = CodinRep::AddEmployee.new(registration, pis_number, name, self.ip, self.tcp_port)
+      elsif operation_type == :remove
+        command = CodinRep::DelEmployee.new(registration, self.ip, self.tcp_port)
+      else
+        raise EmployeeCommand::UnknownEmployeeOperation.new(operation_type)
+      end
       response = command.execute
       response
     end

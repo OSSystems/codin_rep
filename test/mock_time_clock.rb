@@ -54,10 +54,12 @@ class MockTimeClock
       begin
         raw_command = []
         @keep_connected = true
+        @first_connection = true
         # Read command type
         while @keep_connected && raw_command = read_from_socket_with_timeout(socket, 9)
           response = process_command(raw_command, socket)
           socket.write response
+          @first_connection = false
         end
       ensure
         socket.close unless socket.closed?
@@ -133,6 +135,25 @@ class MockTimeClock
         response += afd_records[@afd_read_current_id].export + "\r\n"
       end
       @afd_read_current_id += 1
+    when "PGREP075h"
+      payload = read_from_socket_with_timeout(socket, 66)
+      raw_registration, raw_pis, raw_name = payload.scan(/.(.{6})(.{6})(.+)/).flatten
+      registration = convert_bytes_to_string(raw_registration)
+      pis = convert_bytes_to_string(raw_pis)
+      name = raw_name.strip
+      @data.employees << {name: name, pis: pis, registration: registration}
+      response = "REP003h1\0"
+    when "PGREP016j"
+      payload = read_from_socket_with_timeout(socket, 7)
+      raw_registration = payload.scan(/.(.{6})/).flatten[0]
+      registration = convert_bytes_to_string(raw_registration)
+      @data.employees.delete_if{|employee| employee[:registration] == registration}
+      response = "REP003j1\0"
+    when 'PGREP010h', 'PGREP010j'
+      # Don't care for the result of these comands, just disconnect when
+      # possible.
+      @keep_connected = false
+      response = ""
     else
       raise StandardError.new("Unknown command \"#{raw_command}\"!")
     end
@@ -141,6 +162,7 @@ class MockTimeClock
 
   def read_from_socket_with_timeout(socket, bytes_to_be_read, timeout_value=5)
     data_to_receive = nil
+    timeout_value = 600 if @first_connection # use a large timeout on first connection
     timeout(timeout_value) { data_to_receive = socket.readpartial( bytes_to_be_read ) }
     return data_to_receive
   end
@@ -154,5 +176,9 @@ class MockTimeClock
     time = CodinRep::TimeUtil.unpack payload
     @data.time = time
     return time
+  end
+
+  def convert_bytes_to_string(bytes)
+    bytes.unpack('H*')[0]
   end
 end
