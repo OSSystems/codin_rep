@@ -22,7 +22,7 @@ require File.dirname(__FILE__) + '/../test_helper'
 
 class GetTimeTest < Minitest::Test
   def setup
-    @mock_time_clock = MockTimeClock.new
+    @mock_time_clock = CodinRep::MockTimeClock.new
     @mock_time_clock.start
   end
 

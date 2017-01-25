@@ -22,4 +22,4 @@ $LOAD_PATH << File.join(File.dirname(__FILE__), '..', 'lib')
 
 require 'rubygems'
 require "minitest/autorun"
-require 'mock_time_clock'
+require 'codin_rep/mock_time_clock'
