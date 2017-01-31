@@ -66,7 +66,7 @@ module CodinRep
     end
 
     def get_expected_response_size
-      @sent_registration ? 0 : 9
+      @sent_registration ? 0 : self.class::EXPECTED_HEADER.size
     end
 
     def check_response_header
