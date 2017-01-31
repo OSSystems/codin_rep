@@ -73,8 +73,9 @@ module CodinRep
     end
 
     def check_response_header
-      unless @response.match(/^#{self.class::EXPECTED_HEADER}/)
-        raise UnknownHeader.new @response[0..6], 'get time', self.class::EXPECTED_HEADER
+      expected_header = self.class::EXPECTED_HEADER
+      unless @response.match(/^#{expected_header}/)
+        raise UnknownHeader.new @response[0..expected_header.size], 'set employee', expected_header
       end
     end
 
