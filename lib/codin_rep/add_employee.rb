@@ -24,7 +24,7 @@ module CodinRep
   class AddEmployee < EmployeeCommand
     NAME_MAX_SIZE = 53
     COMMAND_CODE = "075h1".freeze
-    EXPECTED_HEADER = "REP003h1\0".freeze
+    EXPECTED_HEADER = "REP003h1".freeze
     REGISTRATION_COMPLETED_HEADER = 'PGREP010h1'.freeze
 
     def initialize(registration, pis_number, name, *args)

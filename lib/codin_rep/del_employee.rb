@@ -23,7 +23,7 @@ require "codin_rep/employee_command"
 module CodinRep
   class DelEmployee < EmployeeCommand
     COMMAND_CODE = "016j1".freeze
-    EXPECTED_HEADER = "REP003j1\0".freeze
+    EXPECTED_HEADER = "REP003j1".freeze
     REGISTRATION_COMPLETED_HEADER = 'PGREP010j1'.freeze
 
     def initialize(registration, *args)
