@@ -57,6 +57,9 @@ module CodinRep
       @sent_registration = true
       @command_data = self.class::REGISTRATION_COMPLETED_HEADER
       @response = communicate!
+      # The REP requires some time to process the employee commands, so there's
+      # this artificial sleep here to do it.
+      sleep 0.1
       return get_data_from_response_payload
     rescue
       @communication.close
