@@ -35,6 +35,6 @@ class GetTimeTest < Minitest::Test
     # second.
     time = Time.now.round
     @mock_time_clock.data.time = time
-    assert_equal time, @mock_time_clock.get_time
+    assert_equal [time, Date.civil(1970,1,1), Date.civil(1970,1,1)], @mock_time_clock.get_time
   end
 end

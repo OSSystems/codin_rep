@@ -51,7 +51,7 @@ module CodinRep
       rescue ArgumentError
         raise MalformedResponsePayload.new 'get time'
       end
-      return @time
+      return [@time, Date.civil(1970,1,1), Date.civil(1970,1,1)]
     end
   end
 end
