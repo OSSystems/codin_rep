@@ -62,6 +62,8 @@ module CodinRep
             socket.write response
             @first_connection = false
           end
+        rescue EOFError => e
+          # Ignore EOF errors, as only the client should close connections.
         ensure
           socket.close unless socket.closed?
           @threadsMutex.synchronize {
