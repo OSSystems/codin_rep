@@ -40,7 +40,8 @@ module CodinRep
       return response
     end
 
-    def set_time(time)
+    # the DST parameters are just placeholders, for now.
+    def set_time(time, dst_start=nil, dst_end=nil)
       command = CodinRep::SetTime.new(time, self.ip, self.tcp_port)
       response = command.execute
       return response

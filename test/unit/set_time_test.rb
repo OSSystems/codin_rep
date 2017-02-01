@@ -39,4 +39,16 @@ class SetTimeTest < Minitest::Test
     @mock_time_clock.set_time(new_time)
     assert_equal @mock_time_clock.data.time, new_time
   end
+
+  def test_set_time_with_dst_params
+    time = Time.new(2016,12,14,10,28,10)
+    @mock_time_clock.data.time = time
+    # The REP doesn't have a millisecond resolution, so round it to the closest
+    # second.
+    new_time = Time.now.round
+    dst_start = Date.civil(2016,10,16)
+    dst_end = Date.civil(2017,2,19)
+    @mock_time_clock.set_time(new_time, dst_start, dst_end)
+    assert_equal @mock_time_clock.data.time, new_time
+  end
 end
