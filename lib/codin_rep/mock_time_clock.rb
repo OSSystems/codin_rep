@@ -115,11 +115,17 @@ module CodinRep
         response = 'REP2359' + @data.afd.header.export + "\r\n"
         @keep_connected = false
       when "PGREP0289"
-        @afd_read_start_id = read_from_socket_with_timeout(socket, 9).to_i
-        @afd_read_end_id = read_from_socket_with_timeout(socket, 9).to_i
-        @afd_read_current_id = nil
-        @afd_read_finished = false
-        response = "REP0029["
+        byte = read_from_socket_with_timeout(socket, 1)
+        if byte == "0"
+          @afd_read_start_id = read_from_socket_with_timeout(socket, 9).to_i
+          @afd_read_end_id = read_from_socket_with_timeout(socket, 9).to_i
+          @afd_read_current_id = nil
+          @afd_read_finished = false
+          response = "REP0029["
+        else
+          raw_command += byte
+          raise StandardError.new("Unknown command \"#{raw_command}\"!")
+        end
       when "PGREP009,"
         if @afd_read_finished
           response = "REP0029]"

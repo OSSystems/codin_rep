@@ -33,7 +33,7 @@ module CodinRep
       end
     end
 
-    START_COMMAND = "PGREP0289".freeze
+    START_COMMAND = "PGREP02890".freeze
     NEXT_RECORD_COMMAND = "PGREP009,".freeze
     START_HEADER = 'REP0029['.freeze
     END_HEADER = 'REP0029]'.freeze
