@@ -19,5 +19,5 @@
 # e-mail: contato@ossystems.com.br
 
 module CodinRep
-  VERSION = "0.2.5".freeze
+  VERSION = "0.2.6".freeze
 end
