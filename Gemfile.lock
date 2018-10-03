@@ -9,7 +9,7 @@ GEM
   remote: https://rubygems.org/
   specs:
     builder (3.2.2)
-    byebug (9.0.6)
+    byebug (10.0.2)
     ci_reporter (2.0.0)
       builder (>= 2.1.2)
     ci_reporter_minitest (1.0.0)
