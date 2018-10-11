@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/OSSystems/AFDParser.git
-  revision: 87f95fd24116af4f88dd2d7cdfdfddbead2e439a
+  revision: 16532b8f6d2813117386b36ae131cfd8a047314b
   specs:
     afd_parser (0.2.0)
       rake (>= 0.8.7)
