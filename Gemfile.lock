@@ -1,8 +1,8 @@
 GIT
   remote: https://github.com/OSSystems/AFDParser.git
-  revision: 87f95fd24116af4f88dd2d7cdfdfddbead2e439a
+  revision: b62ce3eb0969eb241923339b0f290134a36c5576
   specs:
-    afd_parser (0.2.0)
+    afd_parser (0.2.1)
       rake (>= 0.8.7)
 
 GEM
