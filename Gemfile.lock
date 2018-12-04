@@ -1,13 +1,8 @@
-GIT
-  remote: https://github.com/OSSystems/AFDParser.git
-  revision: b62ce3eb0969eb241923339b0f290134a36c5576
-  specs:
-    afd_parser (0.2.1)
-      rake (>= 0.8.7)
-
 GEM
   remote: https://rubygems.org/
   specs:
+    afd_parser (0.2.1)
+      rake (>= 0.8.7)
     builder (3.2.2)
     byebug (10.0.2)
     ci_reporter (2.0.0)
@@ -31,7 +26,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  afd_parser!
+  afd_parser
   byebug
   ci_reporter_minitest
   minitest
@@ -40,4 +35,4 @@ DEPENDENCIES
   simplecov-rcov
 
 BUNDLED WITH
-   1.13.6
+   1.17.1

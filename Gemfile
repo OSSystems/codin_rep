@@ -20,7 +20,7 @@
 
 source 'https://rubygems.org'
 
-gem 'afd_parser', git: 'https://github.com/OSSystems/AFDParser.git'
+gem 'afd_parser'
 
 group :development, :test do
   gem 'byebug'
