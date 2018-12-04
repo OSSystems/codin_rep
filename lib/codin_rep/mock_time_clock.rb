@@ -172,7 +172,7 @@ module CodinRep
     def read_from_socket_with_timeout(socket, bytes_to_be_read, timeout_value=5)
       data_to_receive = nil
       timeout_value = 600 if @first_connection # use a large timeout on first connection
-      timeout(timeout_value) { data_to_receive = socket.readpartial( bytes_to_be_read ) }
+      Timeout.timeout(timeout_value) { data_to_receive = socket.readpartial( bytes_to_be_read ) }
       return data_to_receive
     end
 

@@ -48,7 +48,7 @@ module CodinRep
       @attempt = 0
       while @attempt < @max_attempts do
         begin
-          timeout(@timeout_time) {
+          Timeout.timeout(@timeout_time) {
             @socket = TCPSocket.open(@host_address, @port)
           }
           # Use a finalizer to close the socket if "self" is going to be
